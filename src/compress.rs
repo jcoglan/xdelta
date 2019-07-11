@@ -28,10 +28,13 @@ impl Index {
     }
 
     pub fn compress(&self, target: &str) -> Delta {
+        let source_size = self.source.len();
+        let target_size = target.len();
+
         let mut compressor = Compressor::new(self, target);
         compressor.compress();
 
-        Delta::new(compressor.ops)
+        Delta::new(source_size, target_size, compressor.ops)
     }
 
     fn offsets(&self, chunk: &[u8]) -> impl Iterator<Item = &usize> {
