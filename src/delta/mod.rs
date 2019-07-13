@@ -29,6 +29,19 @@ impl Delta {
 
         source_len + target_len + ops_len
     }
+
+    pub fn to_vec(&self) -> Vec<u8> {
+        let mut buffer = Vec::new();
+
+        buffer.extend(varint::encode(self.source_size));
+        buffer.extend(varint::encode(self.target_size));
+
+        for op in &self.ops {
+            buffer.extend(op.to_vec());
+        }
+
+        buffer
+    }
 }
 
 #[derive(Debug, Eq, PartialEq)]
@@ -43,5 +56,18 @@ impl Op {
             Op::Copy(offset, size) => copy::encode(*offset, *size).len(),
             Op::Insert(buffer) => 1 + buffer.len(),
         }
+    }
+
+    fn to_vec(&self) -> Vec<u8> {
+        match self {
+            Op::Copy(offset, size) => copy::encode(*offset, *size),
+            Op::Insert(buffer) => Op::prepend_length(buffer),
+        }
+    }
+
+    fn prepend_length(buffer: &[u8]) -> Vec<u8> {
+        let mut bytes = vec![buffer.len() as u8];
+        bytes.extend(buffer);
+        bytes
     }
 }
