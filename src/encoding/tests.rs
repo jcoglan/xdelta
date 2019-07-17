@@ -1,3 +1,5 @@
+#![cfg(test)]
+
 use super::{copy, varint};
 
 macro_rules! encode {

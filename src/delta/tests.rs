@@ -1,3 +1,5 @@
+#![cfg(test)]
+
 use super::Op::{Copy, Insert};
 use crate::Index;
 

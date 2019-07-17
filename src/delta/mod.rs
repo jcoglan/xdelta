@@ -1,4 +1,3 @@
-#[cfg(test)]
 mod tests;
 
 use super::encoding::{copy, varint};
